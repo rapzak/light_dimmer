@@ -1,0 +1,116 @@
+author: Kasper Jepsen @ Rapzak
+description: 4 Ch light dimmer / Fan control with mqtt
+version: 1.0
+
+libs_version: ${mos.version}
+modules_version: ${mos.version}
+mongoose_os_version: ${mos.version}
+
+# Optional. List of tags for online search.
+tags:
+  - c
+  - js
+  - HW Timer
+  - GPIO + ISR
+  - Triac
+
+# List of files / directories with C sources. No slashes at the end of dir names.
+sources:
+  - src
+
+# List of dirs. Files from these dirs will be copied to the device filesystem
+filesystem:
+  - fs
+
+# Custom configuration entries, settable via "device configuration"
+# Below is a custom firmware configuration example.
+# Uncomment and modify according to your needs:
+
+# config_schema:
+#  - ["my_app", "o", {title: "My app custom settings"}]
+#  - ["my_app.bool_value", "b", false, {title: "Some boolean value"}]
+#  - ["my_app.string_value", "s", "", {title: "Some string value"}]
+#  - ["my_app.int_value", "i", 123, {title: "Some integer value"}]
+
+# These settings get compiled into the C structure, and can be accessed
+# from the C code this way:
+#
+# printf("Hello from %s!\n", get_cfg()->device.id);
+#
+# Settings are cool: can be modified remotely without full firmware upgrade!
+#
+# To see all available compiled settings, buid the firmware and open
+# build/gen/sys_config.c or build/gen/sys_config.h file.
+#
+# Also, in this config_schema section, you can override existing
+# settings that has been created by other libraries. For example, debug log
+# level is 2 by default. For this firmware we can override it to 3:
+#
+# config_schema:
+#  - ["debug.level", 3]
+
+# WiFi Configurations
+config_schema:  
+    - ["triac", "o", {title: "Light Dimmer custom settings"}]
+    - ["triac.zc_in", "i", 34, {title: "Zero Cross Input pin"}]
+    - ["triac.ch1_out", "i", 33, {title: "CH1 Output pin"}]
+    - ["triac.ch2_out", "i", 25, {title: "CH2 Output pin"}]
+    - ["triac.ch3_out", "i", 12, {title: "CH3 Output pin"}] # wrong pcb desgin
+    - ["triac.ch4_out", "i", 32, {title: "CH4 Output pin"}]
+    - ["triac.mqtt_string", "s", "house/heating/triac", {title: "Triac Chx MQTT topic"}]
+
+    - ["relay", "o", {title: "Relay output group"}]
+    - ["relay.ch1_out", "i", 19, {title: "CH1 Output"}]
+    - ["relay.ch2_out", "i", 18, {title: "CH2 Output"}]
+    - ["relay.ch3_out", "i", 5, {title: "CH3 Output"}]
+    - ["relay.ch4_out", "i", 21, {title: "CH4 Output"}]   
+    - ["relay.mqtt_string", "s", "house/heating/relay", {title: "Relay Chx MQTT topic"}]
+  
+   
+    - ["pwm", "o", {title: "pwm output group"}]
+    - ["pwm.ch1_out", "i", 15, {title: "CH1 Output"}]
+    - ["pwm.ch2_out", "i", 2, {title: "CH2 Output"}]
+    - ["pwm.ch3_out", "i", 0, {title: "CH3 Output"}]
+    - ["pwm.ch4_out", "i", 4, {title: "CH4 Output"}]   
+    - ["pwm.mqtt_string", "s", "house/heating/pwm", {title: "pwm Chx MQTT topic"}]
+ 
+    
+    
+    - ["one_wire", "o", {title: "one_wire group"}]
+    - ["one_wire.ch1", "i", 26, {title: "CH1"}]
+    - ["one_wire.ch2", "i", 27, {title: "CH2"}]
+    - ["one_wire.ch3", "i", 14, {title: "CH3"}]
+    
+    - ["ac_in", "o", {title: "AC in group"}]
+    - ["ac_in.ch1", "i", 23, {title: "CH1"}]
+    - ["ac_in.ch1_pull", "i", 22, {title: "CH1"}]
+
+    - ["uart", "o", {title: "one_wire output group"}]
+    - ["uart.rx", "i", 16, {title: "uart rx"}]
+    - ["uart.tx", "i", 17, {title: "uart tx"}]
+
+ 
+    
+    
+    - ["wifi.ap.enable", "b", false, {title: "config"}]
+    - ["wifi.sta.enable", "b", true, {title: "config"}]
+    - ["wifi.sta.ssid", "s", "KJE", {title: "wifi ssid"}]
+    - ["wifi.sta.pass", "s", "xxxxxxxxxx", {title: "wifi password"}]
+    - ["debug.level", 3]
+    - ["mqtt.server", "10.16.1.2:1883"]
+    - ["mqtt.enable", true]
+    - ["rpc.mqtt.enable", false]  # Disable remote control over MQTT
+
+# List of libraries used by this app, in order of initialisation
+libs:
+  - origin: https://github.com/mongoose-os-libs/ca-bundle
+  - origin: https://github.com/mongoose-os-libs/rpc-service-config
+  - origin: https://github.com/mongoose-os-libs/rpc-service-fs
+  - origin: https://github.com/mongoose-os-libs/rpc-uart
+  - origin: https://github.com/mongoose-os-libs/wifi
+  - origin: https://github.com/mongoose-os-libs/mjs
+  - origin: https://github.com/mongoose-os-libs/rpc-mqtt
+  - origin: https://github.com/mongoose-os-libs/pwm
+  - origin: https://github.com/mongoose-os-libs/arduino-dallas-temperature
+# Used by the mos tool to catch mos binaries incompatible with this file format
+manifest_version: 2017-05-18
