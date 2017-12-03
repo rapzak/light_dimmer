@@ -94,9 +94,8 @@ config_schema:
     
     - ["wifi.ap.enable", "b", false, {title: "config"}]
     - ["wifi.sta.enable", "b", true, {title: "config"}]
-    - ["wifi.sta.ssid", "s", "KJE", {title: "wifi ssid"}]
-    - ["wifi.sta.pass", "s", "xxxxxxxxxx", {title: "wifi password"}]
     - ["debug.level", 3]
+    - ["debug.udp_log_addr", "10.16.1.139:5678"]
     - ["mqtt.server", "10.16.1.2:1883"]
     - ["mqtt.enable", true]
     - ["rpc.mqtt.enable", false]  # Disable remote control over MQTT
@@ -108,9 +107,9 @@ libs:
   - origin: https://github.com/mongoose-os-libs/rpc-service-fs
   - origin: https://github.com/mongoose-os-libs/rpc-uart
   - origin: https://github.com/mongoose-os-libs/wifi
-  - origin: https://github.com/mongoose-os-libs/mjs
+  - origin: https://github.com/mongoose-os-libs/ota-http-server
   - origin: https://github.com/mongoose-os-libs/rpc-mqtt
   - origin: https://github.com/mongoose-os-libs/pwm
-  - origin: https://github.com/mongoose-os-libs/arduino-dallas-temperature
+  - origin: https://github.com/mongoose-os-libs/dallas-rmt
 # Used by the mos tool to catch mos binaries incompatible with this file format
 manifest_version: 2017-05-18

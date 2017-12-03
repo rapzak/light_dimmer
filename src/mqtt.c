@@ -25,9 +25,13 @@ static void relay_handler(struct mg_connection *c, const char *topic, int topic_
     json_scanf(msg, msg_len, "{ch:%d,value:%d}",&ch,&value);		
 	switch(ch){
 		case 1 : set_relay_ch(mgos_sys_config_get_relay_ch1_out(),value);
+		 break;
 		case 2 : set_relay_ch(mgos_sys_config_get_relay_ch2_out(),value);
+		 break;
 		case 3 : set_relay_ch(mgos_sys_config_get_relay_ch3_out(),value);
+		 break;
 		case 4 : set_relay_ch(mgos_sys_config_get_relay_ch4_out(),value);
+		 break;
 	}
 	LOG(LL_ERROR, ("Got message on topic %.*s - ch:%d - Value:%d\n", topic_len, topic,ch,value));
 }
@@ -37,9 +41,13 @@ static void pwm_handler(struct mg_connection *c, const char *topic, int topic_le
     json_scanf(msg, msg_len, "{ch:%d,value:%d}",&ch,&value);		
 	switch(ch){
 		case 1 : set_pwm_ch(mgos_sys_config_get_pwm_ch1_out(),value);
+		 break;
 		case 2 : set_pwm_ch(mgos_sys_config_get_pwm_ch2_out(),value);
+		 break;
 		case 3 : set_pwm_ch(mgos_sys_config_get_pwm_ch3_out(),value);
+		 break;
 		case 4 : set_pwm_ch(mgos_sys_config_get_pwm_ch4_out(),value);
+		 break;
 	}
 	LOG(LL_ERROR, ("Got message on topic %.*s - ch:%d - Value:%d\n", topic_len, topic,ch,value));
 }
@@ -54,9 +62,13 @@ static void triac_handler(struct mg_connection *c, const char *topic, int topic_
 		value = 20;	
 	switch(ch){
 		case 1 : triac_set_value[0]=value;
+		 break;
 		case 2 : triac_set_value[1]=value;
+		 break;
 		case 3 : triac_set_value[2]=value;
+		 break;
 		case 4 : triac_set_value[3]=value;
+		 break;
 	}
 	LOG(LL_ERROR, ("Got message on topic %.*s - ch:%d - Value:%d\n", topic_len, topic,ch,value));
 }

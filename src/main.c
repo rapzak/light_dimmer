@@ -33,32 +33,32 @@ struct ow_struct one_wire_ch2;
 struct ow_struct one_wire_ch3;
 
 
-void setup_onewire(int pin, struct ow_struct *one_wire_chx) {
-  one_wire_chx->obj = mgos_arduino_dt_create(mgos_arduino_onewire_create(pin));
-  mgos_arduino_dt_set_wait_for_conversion(one_wire_chx->obj,false);
-  mgos_arduino_dt_begin(one_wire_chx->obj);
-  if ((one_wire_chx->one_wire_count = mgos_arduino_dt_get_device_count(one_wire_chx->obj)) == 0) 
+void setup_onewire(struct ow_struct *one_wire_chx) {
+  one_wire_chx->obj = mgos_dallas_rmt_create(mgos_onewire_rmt_create(one_wire_chx->pin,one_wire_chx->rmt_rx,one_wire_chx->rmt_tx));
+  mgos_dallas_rmt_set_wait_for_conversion(one_wire_chx->obj,true);
+  mgos_dallas_rmt_begin(one_wire_chx->obj);
+  if ((one_wire_chx->one_wire_count = mgos_dallas_rmt_get_device_count(one_wire_chx->obj)) == 0) 
     return;
 
 
   for (int i = 0; i < one_wire_chx->one_wire_count; i++) {
-    mgos_arduino_dt_get_address(one_wire_chx->obj, one_wire_chx->one_wire_addr[i],i);
+     mgos_dallas_rmt_get_address(one_wire_chx->obj, one_wire_chx->one_wire_addr[i],i);
 }
 }
 
 void loop_onewire(void *arg) {
   struct ow_struct* one_wire_chx =(struct ow_struct*) arg;
-  
+  mgos_dallas_rmt_request_temperatures(one_wire_chx->obj);
   for (int i = 0; i < one_wire_chx->one_wire_count; i++) {
-	one_wire_chx->sensor_temp[i]  = mgos_arduino_dt_get_tempc(one_wire_chx->obj, one_wire_chx->one_wire_addr[i])/100.0;
-    printf("--------Sens#%d temperature: %f *C -- ch_%d\n", i + 1, one_wire_chx->sensor_temp[i],one_wire_chx->ch );
+	one_wire_chx->sensor_temp[i]  = mgos_dallas_rmt_get_tempc(one_wire_chx->obj, one_wire_chx->one_wire_addr[i])/100.0;
+    //printf("--------Sens#%d temperature: %f *C -- ch_%d -- pin %d\n", i + 1, one_wire_chx->sensor_temp[i],one_wire_chx->ch,one_wire_chx->pin );
   }
-  mgos_arduino_dt_request_temperatures(one_wire_chx->obj);
+  
 }
 
 static void start_onewire( void *arg) {
 	struct ow_struct* one_wire_chx =(struct ow_struct*) arg;
-	setup_onewire(one_wire_chx->pin, one_wire_chx); //mgos_sys_config_get_one_wire_ch1
+	setup_onewire(one_wire_chx); //mgos_sys_config_get_one_wire_ch1
 	mgos_set_timer(10000, 1, loop_onewire,arg); // 3000
 }
 
@@ -139,10 +139,18 @@ enum  mgos_app_init_result mgos_app_init(void) {
 	one_wire_ch1.pin = 26;
 	one_wire_ch2.pin = 27;
 	one_wire_ch3.pin = 14;
+	
+	one_wire_ch1.rmt_tx = 1;
+	one_wire_ch2.rmt_tx = 3;
+	one_wire_ch3.rmt_tx = 5;
+	one_wire_ch1.rmt_rx = 2;
+	one_wire_ch2.rmt_rx = 4;
+	one_wire_ch3.rmt_rx = 6;
+	
 	strcpy(one_wire_ch1.name, "wire1");
 	strcpy(one_wire_ch2.name, "wire2");
 	strcpy(one_wire_ch3.name, "wire3");
-
+	
 	
 	//start onewire timer
 	mgos_set_timer(5000, 0, start_onewire,&one_wire_ch1);
